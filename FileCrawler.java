@@ -9,7 +9,7 @@ import org.apache.commons.collections4.map.MultiValueMap;
 
 public class FileCrawler {
 	
-	public MultiMap<String, String> multiMap = new MultiValueMap(); 
+	public MultiMap<String, String> multiMap = new MultiValueMap<String, String>(); 
  WorkQueue workQ;
 	static int i = 0;
 	String myQueue[];
@@ -44,28 +44,45 @@ public class FileCrawler {
 					if (entry.compareTo("..") == 0)
 						continue;
 					String fn = name + "\\" + entry;
+					String gn = name + "/" + entry;
 
 					System.out.println(fn);
 					//System.out.println(name);
 					multiMap.put(entry, fn);
-				
-					File chk = new File(entry);
+					//int ext = entry.lastIndexOf(entry);
+					 
+					
+					BufferedReader in = null;
 					try {
-					    Scanner scanner = new Scanner(chk);
+						if(entry.startsWith(".")){
+							continue;	//ignore system meta files
+						}
+						if(new File(gn).isDirectory()){
+							continue;	//ignore system meta files
+						}
+						in = new BufferedReader(new FileReader(new File(gn)));
+						
+						} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					 //Scanner scanner = new Scanner(chk);
 
 					    //now read the file line by line...
 					   // int lineNum = 0;
-					    while (scanner.hasNextLine()) {
-					        String line = scanner.nextLine();
-					        //lineNum++;
-					        if(line.contains("d")) { 
-					        	multiMap.put("dsa.txt",fn);    
-					        
-					        }
-					    }
-					} catch(FileNotFoundException e) { 
-					    //handle this
-					}
+					    try {
+							for (String x = in.readLine(); x != null; x = in.readLine())
+								
+							    if(x.contains("dsa.txt")) { 
+							    	multiMap.put("dsa.txt",fn);    
+							    
+							    }
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					    
+					
 					
 					
 				}
